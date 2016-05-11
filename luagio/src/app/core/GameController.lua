@@ -1,0 +1,1 @@
+local GameController = class("GameController")

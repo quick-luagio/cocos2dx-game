@@ -166,3 +166,17 @@ end
 function game.lazy(tables)
    return function() return tables end 
 end
+
+function game.checkLazy(funcTable)
+   return isfunction(funcTable) and funcTable() or funcTable
+end
+
+function game.checkObjName(clsName)
+  if not clsName then return clsName end
+  return string.lower(string.sub(clsName,0,1))..string.sub(clsName,0)
+end
+
+
+
+
+

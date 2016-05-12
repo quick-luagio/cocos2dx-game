@@ -10,15 +10,10 @@ local modules_init_ ={
 -----------------------------模块监听 layz load---------------------------
 local module_configs_ ={}
 
-
-module_configs_["login"] = ${
-	events = ${},
-	views  = ${"LoginView","LoginView"},
-}
-
 module_configs_["user"] = ${
 	events = ${},
 	views  = ${},
+	proxys = ${},
 }
 
 
@@ -31,7 +26,9 @@ local facade_ = kode.facade
 facade_:skip(skip_)
 
 
--- 注册模块observer
+-- 加载配置
+facade_:loadConfigs(module_configs_)
+-- 注册模块观察者
 facade_:registerModules(table.unique(modules_init_))
 
 

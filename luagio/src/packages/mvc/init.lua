@@ -1,14 +1,10 @@
 
-Listeners = {}
+local eventListeners_ = {}
 
-local Event = Event or {}
 function Event.getListeners(module)
-	local eventListeners = Listeners[module]
-	
-	if isfunction(eventListeners) then
-		return eventListeners()
-	elseif istable(eventListeners)
-        return eventListeners
+	local listenerFunc_ = eventListeners_[module]
+	if listenerFunc_ then
+		return listenerFunc_()
 	else
 		lualog("module [%s] has no controller", module)
 		return nil
@@ -18,7 +14,7 @@ end
 -- Lazy loading
 function Event.register(module, events)
 	if module and events then
-		Listeners[module] = events
+		eventListeners_[module] = events
 	else
 		error("Event.register failed, module or events is nil")
 	end
@@ -26,7 +22,7 @@ end
 
 function Event.checkEvents()
 	local events
-	for module, eventFunc in pairs(Listeners) do
+	for module, eventFunc in pairs(eventListeners_) do
 		events = eventFunc()
 		if istable(events) and #events > 0 then
 			local eventName, prev
@@ -62,7 +58,7 @@ function Facade:getInstance()
 end
 
 
-function Facade:registerEvents(modules,events)
+function Facade:registerEvents(module,events)
    Event.register(module, events)
 end 
 
@@ -182,6 +178,10 @@ function Facade:loadEvent(module, event)
 end
 
 function Facade:loadModule(module)
+	if self.loadedModules_[module]  then
+       printInfo(module.."has loaded before,plz check")
+       return
+	end
 	local controller = self:loadController(module)
 	assert(controller ~= nil, module .. " controller must be not nil")
 	

@@ -13,7 +13,7 @@ local module_configs_ ={}
 
 module_configs_["login"] = ${
 	events = ${},
-	views  = ${},
+	views  = ${"LoginView","LoginView"},
 }
 
 module_configs_["user"] = ${
@@ -32,7 +32,7 @@ facade_:skip(skip_)
 
 
 -- 注册模块observer
-facade_:registerModules(modules_init_)
+facade_:registerModules(table.unique(modules_init_))
 
 
 

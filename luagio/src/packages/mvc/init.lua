@@ -101,6 +101,7 @@ function Facade:send(eventName, ...)
 end
 
 function Facade:registerModules(modules)
+	modules = table.unique(modules)
 	for _, v in ipairs(modules) do
 		if v then
 			self:registerModule(v)

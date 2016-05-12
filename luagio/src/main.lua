@@ -65,14 +65,35 @@
 
 
 -- print(hello)
-local t  = "LOGIN"
-local tt = string.find(t,"_")
+local  t = {1,2,2,3}
 
-print(tt)
---local b = string.sub("LOGIN_Hello_ddd",0,string.find(t,"_")-1)
+function table.indexOf(t, value)
+	for k, v in pairs(t) do
+		if type(value) == "function" then
+			if value(v) then return k end
+		else
+			if v == value then return k end
+		end
+	end
 
+	return nil
+end
 
-print(b)
+function table.includes(t, value)
+	return table.indexOf(t, value)
+end
 
+function table.unique(t)
+	local seen = {}
+	for i, v in ipairs(t) do
+		if not table.includes(seen, v) then table.insert(seen, v) end
+	end
 
+	return seen
+end
 
+t = table.unique(t)
+
+for i,v in ipairs(t) do
+	print(i,v)
+end

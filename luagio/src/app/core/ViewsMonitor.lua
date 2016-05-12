@@ -1,25 +1,25 @@
-local LayersManager = class("LayersManager")
+local ViewsMonitor = class("ViewsMonitor")
 local layerSets ={}
 
-function LayersManager:ctor()
+function ViewsMonitor:ctor()
    self._mainLayer = display.newLayer()
    self._mainLayer:retain()
 end
 
-function LayersManager:replaceScene(scene)
+function ViewsMonitor:replaceScene(scene)
    if self._mainLayer then
       self._mainLayer:removeFromParent()
    end
    scene:addChild(self._mainLayer)
 end
 
-function LayersManager:clearLayers()
+function ViewsMonitor:clearLayers()
    if self._mainLayer then
       self._mainLayer:removeAllChildren()
    end
 end
 
-function LayersManager:clear()
+function ViewsMonitor:clear()
    if  self._mainLayer then
 	   self._mainLayer:release()
 	   self._mainLayer:removeFromParent()
@@ -35,7 +35,7 @@ layerSets["GUIDE"]     = {zorder=4,}
 layerSets["TIP"]       = {zorder=5,}
 
 
-function LayersManager:addView(view)
+function ViewsMonitor:addView(view)
    if not view.viewType or view.getUI() then
    	  printInfo(string.format(" %s not find viewType or getUI() is nil",rawget(view,"__cname")))
       return
@@ -56,18 +56,19 @@ function LayersManager:addView(view)
          _mainLayer:addChild(uiLayer,layerSet.zorder)
    	  end
       uiLayer:addView(view:getUI())
+      view:onShow()
    end
 end
 
-function LayersManager:removeLayer(viewType)
+function ViewsMonitor:removeLayer(viewType)
    local uiLayer = self:getLayer(viewType)
    if uiLayer then
-      uiLayer:removeFromParent()
+      uiLayer:remove()
    end
 end
 
 --可视化某个viewType
-function LayersManager:visibleLayer(viewType,visible)
+function ViewsMonitor:visibleLayer(viewType,visible)
    local uiLayer = self:getLayer(viewType)
    if uiLayer then
       uiLayer:setVisible(visible)
@@ -80,7 +81,7 @@ function LayersManager:visibleLayer(viewType,visible)
 end
 
 
-function LayersManager:getLayer(viewType)
+function ViewsMonitor:getLayer(viewType)
    local layerSet = layerSets[viewType]
    if layerSets.cls then
       return _mainLayer:getChildByName(viewType)

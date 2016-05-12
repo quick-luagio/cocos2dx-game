@@ -1,10 +1,26 @@
-if game == nil then return end
+local $ = game.lazy
 
-local modules_init_ = {
+----------------------------初始化的模块------------------------------
+local modules_init_ ={
 	"login",
-	"role",
-	nil,
+	"user",
 }
+
+
+-----------------------------模块监听 layz load---------------------------
+local module_configs_ ={}
+
+
+module_configs_["login"] = ${
+	events = ${},
+	views  = ${},
+}
+
+module_configs_["user"] = ${
+	events = ${},
+	views  = ${},
+}
+
 
 -- moduleName = {skippedModel, skippedService}
 local skip_ = {
@@ -13,7 +29,12 @@ local skip_ = {
 
 local facade_ = kode.facade
 facade_:skip(skip_)
+
+
+-- 注册模块observer
 facade_:registerModules(modules_init_)
+
+
 
 -- Event.checkEvents()
 

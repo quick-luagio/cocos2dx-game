@@ -32,6 +32,47 @@
 -- print(tt,c)
 
 
-local cc = say()
+-- local cc = say()
 
-print(cc.name)
+-- print(cc.name)
+
+-- local kode = {}
+-- function kode.getglobal(f)
+-- 	local v = _G
+-- 	-- for w in string.gfind(f, "[%w_]") do
+-- 	for w in string.gmatch(f, "[%w_]+") do
+-- 		v = v[w]
+-- 	end
+-- 	return v
+-- end
+
+-- function kode.setglobal(f, v)
+-- 	local t = _G
+-- 	-- for w, d in string.gfind(f, "([%w_]+)(.?)") do
+-- 	for w, d in string.gmatch(f, "([%w_]+)(.?)") do
+-- 		if d == "." then -- not last field
+-- 			t[w] = t[w] or {}	-- create table if absent
+-- 			t = t[w]			-- get the table
+-- 		else					-- last field
+-- 			t[w] = v 			-- do the assignment
+-- 		end
+-- 	end
+-- end
+
+
+
+-- kode.setglobal("hello",123131)
+
+
+-- print(hello)
+local t  = "LOGIN"
+local tt = string.find(t,"_")
+
+print(tt)
+--local b = string.sub("LOGIN_Hello_ddd",0,string.find(t,"_")-1)
+
+
+print(b)
+
+
+

@@ -1,14 +1,14 @@
-kode = kode or {}
+game = game or {}
 
-require "kode.helpers.var"
-require "kode.helpers.i18n"
+require "game.helpers.var"
+require "game.helpers.i18n"
 
-kode.namespace = {}
-kode.ns = kode.namespace
+game.namespace = {}
+game.ns = game.namespace
 
 local packages_ = {}
 
-kode.import = function(name)
+game.import = function(name)
 	local p
 	if packages_[name] then
 		p = packages_[name]
@@ -19,13 +19,13 @@ kode.import = function(name)
 	return p
 end
 
-kode.register_namespace = function(nsdata)
+game.register_namespace = function(nsdata)
 	local obj
 	if istable(nsdata) and isset(nsdata.namespace) then
-		kode.namespace[nsdata.namespace] = {}
-		obj = kode.namespace[nsdata.namespace]
+		game.namespace[nsdata.namespace] = {}
+		obj = game.namespace[nsdata.namespace]
 	else
-		obj = kode.namespace
+		obj = game.namespace
 	end
 
 	for name, path in pairs(nsdata.modules) do
@@ -37,14 +37,14 @@ kode.register_namespace = function(nsdata)
 			if isfunction(callback) then
 				return callback(key, path)
 			else
-				return kode.import(path..key)
+				return game.import(path..key)
 			end
 		end
 		setmetatable(obj[name], mt_)
 	end
 end
 
-function kode.tostring(obj, ...)
+function game.tostring(obj, ...)
 	if type(obj) == "table" then
 		return table.tostring(obj)
 	end
@@ -60,18 +60,18 @@ end
 
 function sputs(obj, ...)
 	if type(obj) == "table" then
-		obj = kode.tostring(obj)
+		obj = game.tostring(obj)
 	else
 		if type(obj)=="string" and string.indexOf(obj, "%%s") ~= -1 then
 			if ... then
 				obj = obj:format(...)
 			end
 		else
-			obj = kode.tostring(obj)
+			obj = game.tostring(obj)
 			if ... then
 				local len = select("#", ...)
 				for i=1,len do
-					obj = string.format("%s %s", obj, kode.tostring(select(i, ...)))
+					obj = string.format("%s %s", obj, game.tostring(select(i, ...)))
 				end
 			end
 		end
@@ -83,7 +83,7 @@ function puts(obj, ...)
 	print(sputs(obj, ...))
 end
 
-function kode.appendPath(...)
+function game.appendPath(...)
 	local args = {...}
 	for i=1, #args do
 		local pkgPath = package.path  
@@ -93,7 +93,7 @@ function kode.appendPath(...)
 end
 
 -- Function string.gfind was renamed string.gmatch. (Option LUA_COMPAT_GFIND) 
-function kode.getglobal(f)
+function game.getglobal(f)
 	local v = _G
 	-- for w in string.gfind(f, "[%w_]") do
 	for w in string.gmatch(f, "[%w_]+") do
@@ -102,7 +102,7 @@ function kode.getglobal(f)
 	return v
 end
 
-function kode.setglobal(f, v)
+function game.setglobal(f, v)
 	local t = _G
 	-- for w, d in string.gfind(f, "([%w_]+)(.?)") do
 	for w, d in string.gmatch(f, "([%w_]+)(.?)") do
@@ -115,7 +115,7 @@ function kode.setglobal(f, v)
 	end
 end
 
-function kode.vardump(...)
+function game.vardump(...)
 	local count = select("#", ...)
 	if count < 1 then return end
 
@@ -135,7 +135,7 @@ function kode.vardump(...)
 	end
 end
 
-function kode.eval(input)
+function game.eval(input)
 	return pcall(function()
 		if not input:match("=") then
 			input = "do return (" .. input .. ") end"
@@ -150,93 +150,19 @@ function kode.eval(input)
 	end)
 end
 
-function kode.escape(s)
+function game.escape(s)
 	if s == nil then return '' end
 	local esc, i = s:gsub('&', '&amp'):gsub('<', '&lt'):gsub('>', '&gt')
 
 	return esc
 end
 
-function kode.urlencode(s)
+function game.urlencode(s)
 	return s:gsub("\n", "\r\n"):gsub("([^%-%-%/]", 
 		function(c) return ("%%%02X"):format(string.byte(c))
 	end)
 end
 
-function kode.clone(object)
-	local lookup_table = {}
-	local function _copy(object)
-		if type(object) ~= "table" then
-			return object
-		elseif lookup_table[object] then
-			return lookup_table[object]
-		end
-		local new_table = {}
-		lookup_table[object] = new_table
-		for key, value in pairs(object) do
-			new_table[_copy(key)] = _copy(value)
-		end
-		return setmetatable(new_table, getmetatable(object))
-	end
-	return _copy(object)
-end
-
---Create an class.
-function kode.class(classname, super)
-	local superType = type(super)
-	local cls
-
-	if superType ~= "function" and superType ~= "table" then
-		superType = nil
-		super = nil
-	end
-
-	if superType == "function" or (super and super.__ctype == 1) then
-		-- inherited from native C++ Object
-		cls = {}
-
-		if superType == "table" then
-			-- copy fields from super
-			for k,v in pairs(super) do cls[k] = v end
-			cls.__create = super.__create
-			cls.super    = super
-		else
-			cls.__create = super
-		end
-
-		cls.ctor    = function() end
-		cls.__cname = classname
-		cls.__ctype = 1
-
-		function cls.new(...)
-			local instance = cls.__create(...)
-			-- copy fields from class to native object
-			for k,v in pairs(cls) do instance[k] = v end
-			instance.class = cls
-			instance:ctor(...)
-			return instance
-		end
-
-	else
-		-- inherited from Lua Object
-		if super then
-			cls = kode.clone(super)
-			cls.super = super
-		else
-			cls = {ctor = function() end}
-		end
-
-		cls.__cname = classname
-		cls.__ctype = 2 -- lua
-		cls.__index = cls
-
-		function cls.new(...)
-			local instance = setmetatable({}, cls)
-			instance.class = cls
-			instance:ctor(...)
-			return instance
-		end
-	end
-
-	return cls
+function game.lazy(tables)
+   return function() return tables end 
 end

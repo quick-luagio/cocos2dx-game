@@ -1,12 +1,5 @@
 
-
-
-function __E(eventNames)
-   return function() return eventNames end 
-end
-
 Listeners = {}
-
 
 local Event = Event or {}
 function Event.getListeners(module)
@@ -103,17 +96,11 @@ end
 function Facade:send(eventName, ...)
 	body = select(1, ...) or {}
 	type_ = select(2, ...) or "nil"
-	-- puts("send: name=%s, body=%s, type=%s", eventName, kode.tostring(body), type_)
+	-- puts("send: name=%s, body=%s, type=%s", eventName, game.tostring(body), type_)
 	self:notifyObservers({name=eventName, body=body, type=type_})
 end
 
 function Facade:registerModules(modules)
-	for _, v in ipairs(modules) do
-		if v then
-			self:loadEvent(v)
-		end
-	end
-
 	for _, v in ipairs(modules) do
 		if v then
 			self:registerModule(v)
@@ -122,13 +109,12 @@ function Facade:registerModules(modules)
 end
 
 function Facade:registerModule(module)
+	self:loadEvent(v)
+
 	local listeners_ = Event.getListeners(module)
 	local observer_
 	if listeners_ and #listeners_ > 0 then
-		observer_ = Observer:extend{
-			name = module,
-			notify = "handleNotification"
-		}
+		observer_ = Observer.new(module,"handleNotification")
 		for _, eventName in ipairs(listeners_) do
 			self:registerObserver(eventName, observer_)
 		end
@@ -144,13 +130,13 @@ function Facade:skip(modules)
 end
 
 function Facade:getModulePath(module)
-	return format("%s.%s.%s", kode.appPath, kode.modulePath, module)
+	return format("%s.%s.%s", game.appPath, game.modulePath, module)
 end
 
 function Facade:loadController(module, controller)
 	local controller_ = controller or module
 	local pkg_ = format("%s.%sController", self:getModulePath(module), controller_)
-	local obj_ = require(pkg_)
+	local obj_ = require(pkg_).new(module)
 
 	return obj_
 end
@@ -158,7 +144,7 @@ end
 function Facade:loadModel(module, model)
 	local model_ = model or module
 	local pkg_ = format("%s.%sModel", self:getModulePath(module), model_)
-	local obj_ = require(pkg_)
+	local obj_ = require(pkg_).new()
 
 	return obj_
 end
@@ -166,7 +152,7 @@ end
 function Facade:loadProxy(module, proxy)
 	local proxy_ = proxy or module
 	local pkg_ = format("%s.%sProxy", self:getModulePath(module), proxy_)
-	local obj_ = require(pkg_)
+	local obj_ = require(pkg_).new()
 
 	return obj_
 end
@@ -174,7 +160,7 @@ end
 function Facade:loadView(module, view)
 	local view_ = view or module
 	local pkg_ = format("%s.%sView", self:getModulePath(module), view_)
-	local obj_ = require(pkg_)
+	local obj_ = require(pkg_).new()
 
 	return obj_,pkg_
 end
@@ -182,7 +168,7 @@ end
 function Facade:loadVo(module, vo)
 	local vo_ = vo or module
 	local pkg_ = format("%s.%sVo", self:getModulePath(module), vo_)
-	local obj_ = require(pkg_)
+	local obj_ = require(pkg_).new()
 
 	return obj_
 end
@@ -195,24 +181,24 @@ function Facade:loadEvent(module, event)
 end
 
 function Facade:loadModule(module)
-	local CController_ = self:loadController(module)
-	assert(CController_ ~= nil, module .. " controller must be not nil")
-	local c_ = CController_:new(module)
-	self.loadedModules_[module] = c_
-	c_:onRegister()
+	local controller = self:loadController(module)
+	assert(controller ~= nil, module .. " controller must be not nil")
+	
+	self.loadedModules_[module] = controller
+	controller:onRegister()
 
 	-- if not self.skippedModules_[module] or not self.skippedModules_[module]["m"] then
 	-- 	local model_ = self:loadModel(module)
-	-- 	if model_ then kode.setglobal(module .. "Model", self:loadModel(module)) end
+	-- 	if model_ then game.setglobal(module .. "Model", self:loadModel(module)) end
 	-- end
 
 	-- if not self.skippedModules_[module] or not self.skippedModules_[module]["s"] then
 	-- 	local service_ = self:loadService(module)
-	-- 	if service_ then kode.setglobal(module .. "Service", self:loadService(module)) end
+	-- 	if service_ then game.setglobal(module .. "Service", self:loadService(module)) end
 	-- end
 end
 
-facade = Facade::getInstance()
+
 
 
 --[[
@@ -261,18 +247,10 @@ class controller
 local Controller = class("Controller",Notifier)
 
 function Controller:ctor(moduleName)
-    self.controllerName = moduleName or "controller"
-	self.moduleName = nil
+	self.moduleName = moduleName
 end
 
 
-function Controller:getView()
-	if self.viewComponent_ == nil then
-		self.viewComponent_ = kode.facade:loadView(self.moduleName)
-		assert(self.viewComponent_ ~= nil, self.moduleName .. " view must be not nil")
-	end
-	return self.viewComponent_
-end
 
 function Controller:onRegister()
 end
@@ -299,5 +277,8 @@ end
 
 local View = class("View",Notifier)
 
+local Proxy = class("Proxy",Notifier)
+
+local Model = class("Model",Notifier)
 
 

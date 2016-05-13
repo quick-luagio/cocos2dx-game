@@ -9,7 +9,9 @@ CC_USE_FRAMEWORK = true
 CC_SHOW_FPS = true
 
 -- disable create unexpected global variable
-CC_DISABLE_GLOBAL = true
+CC_DISABLE_GLOBAL = false
+
+cc.PACKAGE_APP_CORE = "app.core" 
 
 -- for module display
 CC_DESIGN_RESOLUTION = {

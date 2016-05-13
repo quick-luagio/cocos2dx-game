@@ -1,0 +1,76 @@
+require("Effects")
+require("Paths")
+
+ConfigManager = {}
+
+local _action_configs = nil
+
+local _effect_configs = nil
+
+local _module_configs = nil
+
+
+
+
+
+
+function ConfigManager.loadActionConfig()
+    if _action_configs then return end
+    _action_configs = require("config.Actions")
+end
+
+function ConfigManager.loadEffectConfig()
+    if _effect_configs then return end
+    _effect_configs = require("config.Effects")
+end
+
+function ConfigManager.loadModuleConfig()
+    if _module_configs then return end
+    _effect_configs = require("config.Modules")
+end
+
+
+
+
+--获取action配置
+function ConfigManager.getActionTable(action_key)
+    if not _action_configs  then
+       ConfigManager.loadActionConfig()
+    end
+    return _action_configs[action_key]
+end
+
+
+
+--获取effect配置
+function ConfigManager.getEffectTable(action_id)
+    if not _effect_configs  then
+       ConfigManager.loadEffectConfig()
+    end
+    return _effect_configs[action_key]
+end
+
+
+--获取模块配置
+function ConfigManager.getModuleConfig()
+   if not _module_configs  then
+       ConfigManager.loadModuleConfig()
+    end
+    return _module_configs
+end
+
+--获取effect所在文件路径
+function ConfigManager.getEffectPath()
+   return Effect_Path
+end
+
+--获取effect 文件名
+function ConfigManager.getEffectFileName(action_id)
+   return string.format("%s_%s","effect",action_id)
+end
+
+
+
+
+
+

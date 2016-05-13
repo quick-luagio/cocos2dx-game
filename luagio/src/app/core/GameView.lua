@@ -1,3 +1,9 @@
+--[[--
+游戏模块视图
+
+]]
+
+
 local CCSPanel = import(".CCSPanel")
 local GameView = class("GameView",View)
 

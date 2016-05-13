@@ -50,11 +50,16 @@ function Facade:ctor()
 	self.skippedModules_ = {}
 end
 
+
 function Facade:getInstance()
     if not self._instance then
        self._instance = Facade.new() 
     end
     return self._instance
+end
+
+function Facade:checkEvents()
+   Events.checkEvents()
 end
 
 

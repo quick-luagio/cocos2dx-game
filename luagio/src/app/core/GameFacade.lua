@@ -1,3 +1,8 @@
+--[[--
+游戏模块控制中心
+
+]]
+
 local GameFacade = class("GameFacade",Facade)
 
 

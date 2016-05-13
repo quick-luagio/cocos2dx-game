@@ -163,8 +163,9 @@ function game.urlencode(s)
 	end)
 end
 
-function game.lazy(tables)
-   return function() return tables end 
+
+function game.lazy(tableStr)
+  return function() return loadstring("return " ..tableStr)() end
 end
 
 function game.checkLazy(funcTable)
@@ -175,8 +176,5 @@ function game.checkObjName(clsName)
   if not clsName then return clsName end
   return string.lower(string.sub(clsName,0,1))..string.sub(clsName,0)
 end
-
-
-
 
 

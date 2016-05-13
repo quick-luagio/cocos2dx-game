@@ -1,3 +1,8 @@
+--[[--
+游戏模块控制器
+
+]]
+
 local GameController = class("GameController")
 
 function GameController:getProxy(name)

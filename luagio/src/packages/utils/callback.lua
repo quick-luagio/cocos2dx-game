@@ -1,7 +1,6 @@
 -- Let's us cancel a callback
-game = game or {}
 
-game.callback = function(callback)
+local callback = function(callback)
 	local object = {callback = callback}
 
 	function object.cancel(self)
@@ -21,3 +20,5 @@ game.callback = function(callback)
 
 	return object
 end
+
+return callback

@@ -5,10 +5,10 @@
 
 
 local CCSPanel = import(".CCSPanel")
-local GameView = class("GameView",View)
+local GameView = class("GameView",cc.mvc.View)
 
 function GameView:ctor()
-   super.View.ctor(self)
+   GameView.super.ctor(self)
    self._isInit = false
    self._isActive = false
 end

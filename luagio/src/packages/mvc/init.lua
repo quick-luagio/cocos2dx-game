@@ -1,12 +1,17 @@
+local mvc = {}
 
+local Event = {}
 local eventListeners_ = {}
+local facadeInstance = nil
 
 function Event.getListeners(module)
 	local listenerFunc_ = eventListeners_[module]
-	if listenerFunc_ then
+	if isfunction(listenerFunc_) then
 		return listenerFunc_()
+	elseif istable(listenerFunc_) then
+        return listenerFunc_
 	else
-		lualog("module [%s] has no controller", module)
+		printInfo("module: [%s] has no controller", module)
 		return nil
 	end
 end
@@ -31,7 +36,7 @@ function Event.checkEvents()
 				if not ((isstring(eventName) and eventName ~= "") or isnumber(eventName)) then
 					prev = i - 1
 					if prev < 1 then prev = 1 end
-					puts("[%s_e.lua id:%s] event name is empty (prev %s)]", module, i, events[prev])
+					printInfo("[%s_e.lua id:%s] event name is empty (prev %s)]", module, i, events[prev])
 					-- error(sputs("[%s_e.lua id:%s] event name is empty (prev %s)]", module, i, events[prev]))
 				end
 			end
@@ -40,22 +45,45 @@ function Event.checkEvents()
 end
 
 --[[
+class observer
+--]]
+
+local Observer = class("Observer")
+
+function Observer:ctor(module,notify)
+    self.notify = notify
+	self.name = module
+	self.context = {}
+end
+
+function Observer:setContext(context)
+	self.context = context
+end
+
+function Observer:notifyObserver(event)
+	self.context[self.notify](self.context, event)
+end
+
+function Observer:compareNotifyContext(object)
+	return object == self.context
+end
+
+--[[
 class facade
 --]]
 local Facade = class("Facade")
 
 function Facade:ctor()
-    self.observerMap_ = {},
-	self.loadedModules_ = {},
+    self.observerMap_ = {}
+	self.loadedModules_ = {}
 	self.skippedModules_ = {}
 end
 
-
 function Facade:getInstance()
-    if not self._instance then
-       self._instance = Facade.new() 
+    if not facadeInstance then
+       facadeInstance = self:create()
     end
-    return self._instance
+    return facadeInstance
 end
 
 function Facade:checkEvents()
@@ -81,7 +109,6 @@ end
 
 function Facade:notifyObservers(event)
 	local observers = nil 
-
 	if self.observerMap_[event.name] then
 		observers = self.observerMap_[event.name]
 		for _, observer in ipairs(observers) do
@@ -91,6 +118,8 @@ function Facade:notifyObservers(event)
 			observer:setContext(self.loadedModules_[observer.name])
 			observer:notifyObserver(event)
 		end
+	else
+        printInfo("can not found eventName: [%s] observers",event.name)
 	end
 end
 
@@ -98,6 +127,7 @@ function Facade:send(eventName, ...)
 	body = select(1, ...) or {}
 	type_ = select(2, ...) or "nil"
 	-- puts("send: name=%s, body=%s, type=%s", eventName, game.tostring(body), type_)
+	printInfo("send eventName:[%s]",eventName)
 	self:notifyObservers({name=eventName, body=body, type=type_})
 end
 
@@ -111,8 +141,7 @@ function Facade:registerModules(modules)
 end
 
 function Facade:registerModule(module)
-	self:loadEvent(v)
-
+	self:loadEvent(module)
 	local listeners_ = Event.getListeners(module)
 	local observer_
 	if listeners_ and #listeners_ > 0 then
@@ -132,12 +161,12 @@ function Facade:skip(modules)
 end
 
 function Facade:getModulePath(module)
-	return format("%s.%s.%s", game.appPath, game.modulePath, module)
+	return string.format("%s.%s", mvc.modulePath, string.lower(module or ""))
 end
 
 function Facade:loadController(module, controller)
 	local controller_ = controller or module
-	local pkg_ = format("%s.%sController", self:getModulePath(module), controller_)
+	local pkg_ = string.format("%s.%sController", self:getModulePath(module), controller_)
 	local obj_ = require(pkg_).new(module)
 
 	return obj_
@@ -145,7 +174,7 @@ end
 
 function Facade:loadModel(module, model)
 	local model_ = model or module
-	local pkg_ = format("%s.%sModel", self:getModulePath(module), model_)
+	local pkg_ = string.format("%s.%sModel", self:getModulePath(module), model_)
 	local obj_ = require(pkg_).new()
 
 	return obj_
@@ -153,7 +182,7 @@ end
 
 function Facade:loadProxy(module, proxy)
 	local proxy_ = proxy or module
-	local pkg_ = format("%s.%sProxy", self:getModulePath(module), proxy_)
+	local pkg_ = string.format("%s.%sProxy", self:getModulePath(module), proxy_)
 	local obj_ = require(pkg_).new()
 
 	return obj_
@@ -161,7 +190,7 @@ end
 
 function Facade:loadView(module, view)
 	local view_ = view or module
-	local pkg_ = format("%s.%sView", self:getModulePath(module), view_)
+	local pkg_ = string.format("%s.%sView", self:getModulePath(module), view_)
 	local obj_ = require(pkg_).new()
 
 	return obj_,pkg_
@@ -169,7 +198,7 @@ end
 
 function Facade:loadVo(module, vo)
 	local vo_ = vo or module
-	local pkg_ = format("%s.%sVo", self:getModulePath(module), vo_)
+	local pkg_ = string.format("%s.%sVo", self:getModulePath(module), vo_)
 	local obj_ = require(pkg_).new()
 
 	return obj_
@@ -177,9 +206,9 @@ end
 
 function Facade:loadEvent(module, event)
 	local event_ = event or module
-	local pkg_ = format("%s.%sEvent", self:getModulePath(module), event_)
+	local pkg_ = string.format("%s.%sEvent", self:getModulePath(module), event_)
 	
-	require(pkg_)
+	pcall(function() require(pkg_) end,0)
 end
 
 function Facade:loadModule(module)
@@ -192,7 +221,6 @@ function Facade:loadModule(module)
 	
 	self.loadedModules_[module] = controller
 	controller:onRegister()
-
 	-- if not self.skippedModules_[module] or not self.skippedModules_[module]["m"] then
 	-- 	local model_ = self:loadModel(module)
 	-- 	if model_ then game.setglobal(module .. "Model", self:loadModel(module)) end
@@ -204,47 +232,19 @@ function Facade:loadModule(module)
 	-- end
 end
 
-
+--mvc.facade = Facade:getInstance()
 
 
 --[[
 class notifier
 --]]
 
-
 local Notifier = class("Notifier")
 
 function Notifier:send(name, body, type_)
-	facade:send(name, body, type_)
+     facadeInstance:send(name,body,type_)
 end
 
-
-
-
---[[
-class observer
---]]
-
-
-local Observer = class("Observer")
-
-function Observer:ctor()
-    self.notify = ""
-	self.name = ""
-	self.context = {}
-end
-
-function Observer:setContext(context)
-	self.context = context
-end
-
-function Observer:notifyObserver(event)
-	self.context[self.notify](self.context, event)
-end
-
-function Observer:compareNotifyContext(object)
-	return object == self.context
-end
 
 --[[
 class controller
@@ -257,29 +257,31 @@ function Controller:ctor(moduleName)
 end
 
 
-
 function Controller:onRegister()
+
 end
 
 function Controller:onRemove()
+
 end
 
 function Controller:handleNotification(notification)
 	if notification.name then
-		local action = "action_" .. notification.name .. "_"
+		local action = "notice"..string.gsub(notification.name,"_","")
 		if self[action] and isfunction(self[action]) then
 			self[action](self, notification)
+		else
+           printInfo("%s,can not found method:[%s] to deal notification",self.__cname,action)
 		end
 		
-		if self.message then
-			local name = notification.name
-			if self.message[name] and isfunction(self.message[name]) then
-				self.message[name](self,notification)
-			end
-		end 
+		-- if self.message then
+		-- 	local name = notification.name
+		-- 	if self.message[name] and isfunction(self.message[name]) then
+		-- 		self.message[name](self,notification)
+		-- 	end
+		-- end 
 	end
 end
-
 
 local View = class("View",Notifier)
 
@@ -287,4 +289,10 @@ local Proxy = class("Proxy",Notifier)
 
 local Model = class("Model",Notifier)
 
+mvc.Facade = Facade
+mvc.Controller = Controller
+mvc.View = View
+mvc.Proxy = Proxy
+mvc.Model = Model
 
+return mvc

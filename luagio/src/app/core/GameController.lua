@@ -3,58 +3,60 @@
 
 ]]
 
-local GameController = class("GameController")
-
-function GameController:getProxy(name)
-  -- return game.getglobal(name)
-end
-
-function GameController:getView(name)
-   return 
-end
+local GameController = class("GameController",cc.mvc.Controller)
 
 -- register view and proxy setglobal
 function GameController:onRegister()
-   GameController.super.onRegister()
-   local module_configs = facade:getConfigs()
-   local module_config  = game.checkLazy(module_configs[self.moduleName])
+   printInfo("[%s], [%s] onRegister",self.moduleName,self.__cname)
+   GameController.super.onRegister(self)
 
-   local views = game.checkLazy(module_config["views"])
-   local proxys = game.checkLazy(module_config["proxys"])
+   local module_configs = cc.facade:getConfigs()
+   local module_config  = module_configs[self.moduleName]
+
+   local views = module_config["views"]
+   local proxys = module_config["proxys"]
    
    for _,view in ipairs(views) do
-   	   local view = facade:loadView(moduleName,view)
-   	   
-	   if view then game.setglobal(game.checkObjName(view.__cname), view) end
+   	local view = cc.facade:loadView(self.moduleName,view)
+	   if view then setglobal(checkObjName(view.__cname), view) end
    end
 
+   if not proxys then
+      proxys = {self.moduleName.."Proxy"}
+   end
    for _,proxy in ipairs(proxys) do
-   	   local proxy = facade:loadProxy(moduleName,proxy)
-   	   if proxy then game.setglobal(game.checkObjName(proxy.__cname),proxy)
+   	local proxy = cc.facade:loadProxy(self.moduleName,proxy)
+   	if proxy then setglobal(checkObjName(proxy.__cname),proxy) end
    end
    
 end
-
 
 -- GameController remove setglobal nil
 function GameController:onRemove()
-   GameController.super.onRemove()
-   local module_configs = facade:getConfigs()
-   local module_config  = game.checkLazy(module_configs[self.moduleName])
+   GameController.super.onRemove(self)
+   printInfo("[%s] onRemove",self.__cname)
 
-   local views = game.checkLazy(module_config["views"])
-   local proxys = game.checkLazy(module_config["proxys"])
+   local module_configs = facade:getConfigs()
+   local module_config  = module_configs[self.moduleName]
+
+   local views = module_config["views"]
+   local proxys = module_config["proxys"]
    
    for _,view in ipairs(views) do
-   	   local view = facade:loadView(moduleName,view)
-   	   
-	   if view then game.setglobal(game.checkObjName(view.__cname), nil) end
+   	local view = facade:loadView(self.moduleName,view)
+	   if view then setglobal(checkObjName(view.__cname), nil) end
+   end
+   
+   if not proxys then
+      proxys = {self.moduleName.."Proxy"}
    end
 
    for _,proxy in ipairs(proxys) do
-   	   local proxy = facade:loadProxy(moduleName,proxy)
-   	   if proxy then game.setglobal(game.checkObjName(proxy.__cname),nil)
+   	   local proxy = facade:loadProxy(self.moduleName,proxy)
+   	   if proxy then setglobal(checkObjName(proxy.__cname),nil) end
    end
 end
+
+
 
 return GameController

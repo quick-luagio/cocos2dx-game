@@ -3,13 +3,19 @@
 
 ]]
 
------------------------------模块监听 layz load---------------------------
+-------------模块名首字母大写  User---------------------------
 local _module_configs ={}
 
-_module_configs["user"] = {
+_module_configs["User"] = {
 	events = {},
-	views  = {},
-	proxys = {},
+	views  = {"User"},
+	proxys = {"User"},
+}
+
+_module_configs["Login"] = {
+	events = {"Login_Proxy_Login","Login_View_Show"},
+	views  = {"Login"},
+	proxys = {"Login"},
 }
 
 

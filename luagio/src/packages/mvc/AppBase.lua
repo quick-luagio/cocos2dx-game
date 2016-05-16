@@ -2,66 +2,39 @@
 local AppBase = class("AppBase")
 
 function AppBase:ctor(configs)
-    self.configs_ = {
-        viewsRoot  = "app.views",
-        modelsRoot = "app.models",
-        defaultSceneName = "MainScene",
-    }
-
-    for k, v in pairs(configs or {}) do
-        self.configs_[k] = v
-    end
-
-    if type(self.configs_.viewsRoot) ~= "table" then
-        self.configs_.viewsRoot = {self.configs_.viewsRoot}
-    end
-    if type(self.configs_.modelsRoot) ~= "table" then
-        self.configs_.modelsRoot = {self.configs_.modelsRoot}
-    end
-
-    if DEBUG > 1 then
-        dump(self.configs_, "AppBase configs")
-    end
-
+    
+    self._configs = configs or  {
+                                    defaultScene = "MainScene",
+                                    scene_package = "app.scenes"
+                                } 
     if CC_SHOW_FPS then
         cc.Director:getInstance():setDisplayStats(true)
     end
 
-    -- event
-    self:onCreate()
+    
+    self:onRegister()
 end
 
 function AppBase:run(initSceneName)
-    initSceneName = initSceneName or self.configs_.defaultSceneName
+    initSceneName = initSceneName or self._configs.defaultScene
     self:enterScene(initSceneName)
 end
 
 function AppBase:enterScene(sceneName, transition, time, more)
-    local view = self:createView(sceneName)
-    view:showWithScene(transition, time, more)
-    return view
+    local scene = self:createScene(sceneName)
+    display.runScene(scene, transition, time, more)
+    return scene
 end
 
-function AppBase:createView(name)
-    for _, root in ipairs(self.configs_.viewsRoot) do
-        local packageName = string.format("%s.%s", root, name)
-        local status, view = xpcall(function()
-                return require(packageName)
-            end, function(msg)
-            if not string.find(msg, string.format("'%s' not found:", packageName)) then
-                print("load view error: ", msg)
-            end
-        end)
-        local t = type(view)
-        if status and (t == "table" or t == "userdata") then
-            return view:create(self, name)
-        end
-    end
-    error(string.format("AppBase:createView() - not found view \"%s\" in search paths \"%s\"",
-        name, table.concat(self.configs_.viewsRoot, ",")), 0)
+
+function AppBase:createScene(sceneName)
+   return require(self._configs.scene_package.."."..sceneName).new()
 end
 
-function AppBase:onCreate()
+
+
+function AppBase:onRegister()
+
 end
 
 return AppBase

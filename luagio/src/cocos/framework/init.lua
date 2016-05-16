@@ -50,10 +50,10 @@ require("cocos.framework.extends.UISlider")
 require("cocos.framework.extends.UITextField")
 end
 
-require("cocos.framework.package_support")
+--require("cocos.framework.package_support")
 
 -- register the build-in packages
-cc.register("event", require("cocos.framework.components.event"))
+--cc.register("event", require("cocos.framework.components.event"))
 
 -- export global variable
 local __g = _G
@@ -76,6 +76,31 @@ function cc.disable_global()
         end
     })
 end
+
+
+-- Function string.gfind was renamed string.gmatch. (Option LUA_COMPAT_GFIND) 
+function getglobal(f)
+    local v = cc
+    -- for w in string.gfind(f, "[%w_]") do
+    for w in string.gmatch(f, "[%w_]+") do
+        v = v[w]
+    end
+    return v
+end
+
+function setglobal(f, v)
+    local t = cc
+    -- for w, d in string.gfind(f, "([%w_]+)(.?)") do
+    for w, d in string.gmatch(f, "([%w_]+)(.?)") do
+        if d == "." then -- not last field
+            t[w] = t[w] or {}   -- create table if absent
+            t = t[w]            -- get the table
+        else                    -- last field
+            t[w] = v            -- do the assignment
+        end
+    end
+end
+
 
 if CC_DISABLE_GLOBAL then
     cc.disable_global()

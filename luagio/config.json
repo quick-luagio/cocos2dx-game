@@ -1,4 +1,5 @@
 {
+    "simulator_cmd":"-write-debug-log   debug.log -console disable",
     "init_cfg":{
        "isLandscape": true,
        "isWindowTop": false,

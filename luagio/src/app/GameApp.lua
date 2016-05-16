@@ -3,24 +3,56 @@
 
 ]]
 
---require(cc.PACKAGE_APP_CORE..".ConfigManager")
+require(cc.PACKAGE_UTILS..".var")
+require(cc.PACKAGE_APP_CORE..".Helper")
+require(cc.PACKAGE_APP_CORE..".ConfigManager")
 
+local AppBase = require(cc.PACKAGE_MVC..".AppBase")
 
-local GameApp = class("GameApp", cc.load("mvc").AppBase)
+local GameApp = class("GameApp", AppBase)
 
-function GameApp:onCreate()
-    math.randomseed(os.time())
-
-    -- facade = GameFacade:getInstance()
-    
-    -- local module_configs = ConfigManager.getModuleConfig()
-
-    -- facade:loadConfigs(module_configs_)
-
-    -- facade_:registerModules(table.unique(table.keys(module_configs_)))
-
-    --facade:checkEvents()
+function GameApp:ctor()
+   local configs = {
+                      defaultScene = "MainScene",
+                      scene_package = cc.PACKAGE_APP_SCENES
+                  }
+    GameApp.super.ctor(self,configs)
 end
 
+
+function GameApp:initApp()
+    local module_configs = ConfigManager.getModuleConfig() --获取模块配置文件
+
+    cc.facade:loadConfigs(module_configs) --载入模块配置文件
+
+    cc.facade:registerModules(table.unique(table.keys(module_configs))) --facade注册模块
+
+    cc.facade:send(cc.events.Login_Proxy_Login)
+
+    -- cc.facade:checkEvents()
+end
+
+function GameApp:inject()
+    cc.mvc = require(cc.PACKAGE_MVC..".init")  --导入mvc库
+
+    cc.mvc.modulePath = cc.PACKAGE_APP_MODULES --设置模块路径
+
+    cc.events = require(cc.PACKAGE_APP_CONFIG..".Events") --获取events
+    
+    cc.paths = require(cc.PACKAGE_APP_CONFIG..".Paths") -- 获取资源路径
+
+    cc.facade = require(cc.PACKAGE_APP_CORE..".GameFacade"):getInstance() -- 获取facade实例
+    
+    cc.mvc.facade = cc.facade
+end
+
+
+
+function GameApp:onRegister()
+    math.randomseed(os.time())
+    
+    self:inject()
+    self:initApp()
+end
 
 return GameApp

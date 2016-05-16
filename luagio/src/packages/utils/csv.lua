@@ -1,5 +1,5 @@
 -- load data from a .csv file
-game = game or {}
+local csv = {}
 
 local function loadFile(path)
 	local nums = 0
@@ -30,7 +30,7 @@ local function makeLine(line_text)
 	return nums, values
 end
 
-function game.loadcsv(path)
+function csv.loadcsv(path)
 	if path == nil then return nil, nil, nil end
 
 	local data = {}
@@ -47,7 +47,7 @@ function game.loadcsv(path)
 	return nums-1, data, labels
 end
 
-function game.loadcsvdata(path)
+function csv.loadcsvdata(path)
 	if path == nil then return nil, nil, nil end
 
 	local data = {}
@@ -60,3 +60,4 @@ function game.loadcsvdata(path)
 
 	return nums, data
 end
+return csv

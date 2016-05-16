@@ -42,7 +42,7 @@ public:
     void setInitViewSize(const cocos2d::Size &size);
     void setBindAddress(const std::string &address);
     const std::string &getBindAddress();
-    
+	const std::string &getSimulatorCmd();
 private:
     ConfigParser(void);
     void setDebugPort(int port);
@@ -51,6 +51,7 @@ private:
     cocos2d::Size _initViewSize;
     string _viewName;
     string _entryfile;
+	string _simulatorCmd;
     bool _isLandscape;
     bool _isWindowTop;
     int _consolePort;

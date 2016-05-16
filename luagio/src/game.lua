@@ -1,22 +1,26 @@
-local Game = {}
+local game = {}
 
 --游戏开始
-function Game.start()
-	xpcall(function()  Game.packageUnload()  require "cocos.init"  end,function(msg) print(msg) end)
+function game.start()
+	xpcall(function()  game.unloadPackage()  game.loadPackage() end,function(msg) print(msg) end)
 	
-    require("app.GameApp"):create():run()
+    require("app.GameApp").new():run()
 end
 
+function game.loadPackage()
+   require"packages.lua" 
+   require "cocos.init" 
+end
 
 --清理pakage
-function Game.packageUnload()
-
+function game.unloadPackage()
+    require("luaLoader")
 end
 
 
-function Game.exit()
+function game.exit()
     os.exit()
 end
 
 
-return Game
+return game

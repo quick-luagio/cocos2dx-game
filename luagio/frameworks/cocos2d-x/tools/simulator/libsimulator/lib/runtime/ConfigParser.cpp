@@ -117,6 +117,14 @@ void ConfigParser::readConfig(const string &filepath)
             }
         }
     }
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
+	if (_docRootjson.HasMember("simulator_cmd"))
+	{
+		const rapidjson::Value& cmd = _docRootjson["simulator_cmd"];
+		
+		_simulatorCmd = cmd.GetString();
+	}
+#endif
 }
 
 ConfigParser::ConfigParser(void) :
@@ -222,4 +230,9 @@ void ConfigParser::setBindAddress(const std::string &address)
 const std::string &ConfigParser::getBindAddress()
 {
     return _bindAddress;
+}
+
+const std::string &ConfigParser::getSimulatorCmd()
+{
+	return _simulatorCmd;
 }

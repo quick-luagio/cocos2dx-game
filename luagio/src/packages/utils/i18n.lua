@@ -1,4 +1,4 @@
-game = game or {}
+local i18n ={}
 
 local registry = { }
 local current_namespace
@@ -59,8 +59,10 @@ local __meta = {
 text:setfallback('zh')
 text:setnamespace('zh')
 
-game.__ = setmetatable(text, __meta)
-game.text = game.__
+i18n.__ = setmetatable(text, __meta)
+i18n.text = i18n.__
+
+return i18n
 
 --[==[
 Usage:

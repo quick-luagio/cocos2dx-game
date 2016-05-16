@@ -217,8 +217,11 @@ int SimulatorWin::getPositionY()
     return rect.top;
 }
 
+
+
 int SimulatorWin::run()
 {
+
     INITCOMMONCONTROLSEX InitCtrls;
     InitCtrls.dwSize = sizeof(InitCtrls);
     InitCtrls.dwICC = ICC_WIN95_CLASSES;
@@ -605,6 +608,12 @@ void SimulatorWin::parseCocosProjectConfig(ProjectConfig &config)
         args.push_back(s);
     }
 
+	if (args.size() <= 1){
+		string projectDir = getCurAppPath().append("/../../");
+		tmpConfig.setProjectDir(projectDir);
+		config.setProjectDir(projectDir);
+	}
+
     if (args.size() >= 2)
     {
         if (args.size() && args.at(1).at(0) == '/')
@@ -617,6 +626,7 @@ void SimulatorWin::parseCocosProjectConfig(ProjectConfig &config)
         tmpConfig.parseCommandLine(args);
     }
 
+
     // set project directory as search root path
     FileUtils::getInstance()->setDefaultResourceRootPath(tmpConfig.getProjectDir().c_str());
 
@@ -624,6 +634,16 @@ void SimulatorWin::parseCocosProjectConfig(ProjectConfig &config)
     auto parser = ConfigParser::getInstance();
     auto configPath = tmpConfig.getProjectDir().append(CONFIG_FILE);
     parser->readConfig(configPath);
+
+	if (!parser->getSimulatorCmd().empty()){
+		String* cmdStr = String::create(parser->getSimulatorCmd());
+		Array * cmds = cmdStr->componentsSeparatedByString(" ");
+		vector<string> args2;
+		for (int i = 0; i < cmds->count(); i++){
+			args2.push_back(((String*)cmds->getObjectAtIndex(i))->getCString());
+		}
+		config.parseCommandLine(args2);
+	}
 
     // set information
     config.setConsolePort(parser->getConsolePort());
@@ -664,7 +684,7 @@ std::string SimulatorWin::getUserDocumentPath()
 {
     TCHAR filePath[MAX_PATH];
     SHGetSpecialFolderPath(NULL, filePath, CSIDL_PERSONAL, FALSE);
-    int length = 2 * wcslen(filePath);
+    int  length = 2 * wcslen(filePath);
     char* tempstring = new char[length + 1];
     wcstombs(tempstring, filePath, length + 1);
     string userDocumentPath(tempstring);

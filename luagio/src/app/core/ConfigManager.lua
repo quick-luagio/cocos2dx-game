@@ -1,5 +1,5 @@
-require("Effects")
-require("Paths")
+cc.events = require(cc.PACKAGE_APP_CONFIG..".Events")
+cc.paths = require(cc.PACKAGE_APP_CONFIG..".Paths")
 
 ConfigManager = {}
 
@@ -11,24 +11,20 @@ local _module_configs = nil
 
 
 
-
-
-
 function ConfigManager.loadActionConfig()
     if _action_configs then return end
-    _action_configs = require("config.Actions")
+    _action_configs = require(cc.PACKAGE_APP_CONFIG..".Actions")
 end
 
 function ConfigManager.loadEffectConfig()
     if _effect_configs then return end
-    _effect_configs = require("config.Effects")
+    _effect_configs = require(cc.PACKAGE_APP_CONFIG..".Effects")
 end
 
 function ConfigManager.loadModuleConfig()
     if _module_configs then return end
-    _effect_configs = require("config.Modules")
+    _module_configs = require(cc.PACKAGE_APP_CONFIG..".Modules")
 end
-
 
 
 

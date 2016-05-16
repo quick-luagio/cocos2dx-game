@@ -4,7 +4,7 @@
 1、处理后端请求
 2、处理数据转换和缓存
 ]]
-local GameProxy = class("GameProxy",Proxy)
+local GameProxy = class("GameProxy",cc.mvc.Proxy)
 
 
 return GameProxy

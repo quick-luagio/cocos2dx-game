@@ -3,8 +3,7 @@
 
 ]]
 
-local GameFacade = class("GameFacade",Facade)
-
+local GameFacade = class("GameFacade",cc.mvc.Facade)
 
 function GameFacade:loadConfigs(module_configs)
    self.module_configs = module_configs
@@ -16,4 +15,9 @@ end
 function GameFacade:getConfigs()
    return self.module_configs
 end
+
+
+
+
+return GameFacade
 

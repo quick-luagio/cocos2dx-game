@@ -2,7 +2,9 @@
 游戏相关的辅助类
 ]]
 
+function checkObjName(clsName)
+  if not clsName or string.len(clsName) <2 then return clsName end
+  return string.lower(string.sub(clsName,0,1))..string.sub(clsName,2)
+end
 
--- 获取 静态数据
--- name:静态文件名
--- process:遍历处理函数
+

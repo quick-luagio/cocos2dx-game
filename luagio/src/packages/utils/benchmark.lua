@@ -1,12 +1,10 @@
-game = game or {}
-
+local benchmark = {}
 local os = os
-local print = print
 
 local time_ = 0
 local time_table_ = {}
 
-function game.bm_start(name)
+function benchmark.bm_start(name)
 	if name then
 		time_table_[name] = os.time()
 	else
@@ -14,7 +12,7 @@ function game.bm_start(name)
 	end
 end
 
-function game.bm_end(name)
+function benchmark.bm_end(name)
 	local diff_
 	if name then
 		if time_table_[name] then
@@ -30,6 +28,9 @@ function game.bm_end(name)
 
 	return diff_
 end
+
+
+return benchmark
 
 --[==[
 Usage:

@@ -1,6 +1,6 @@
 game = game or {}
 
-function game.scandir(directory)
+function scandir(directory)
     local i, t, popen = 0, {}, io.popen
     -- for filename in popen('ls -a "'..directory..'"'):lines() do
     for filename in popen('dir "'..directory..'" /b /ad'):lines() do
@@ -10,7 +10,7 @@ function game.scandir(directory)
     return t
 end
 
-function game.fread(path)
+function fread(path)
 	local file = io.open(path, "r")
 	if file then
 		local content = file:read("*a")
@@ -20,7 +20,7 @@ function game.fread(path)
 	return nil
 end
 
-function game.fwirte(path, content)
+function fwirte(path, content)
 	local file = io.open(path, "w+")
 	if file then
 		if file:write(content) == nil then return false end
@@ -31,7 +31,7 @@ function game.fwirte(path, content)
 	end
 end
 
-function game.fexists(path)
+function fexists(path)
 	local file = io.open(path, "r")
 	if file then
 		io.close(file)
@@ -40,7 +40,7 @@ function game.fexists(path)
 	return false
 end
 
-function game.filesize(path)
+function filesize(path)
 	local size = false
 	local file = io.open(path, "r")
 	if file then
@@ -53,7 +53,7 @@ function game.filesize(path)
 end
 
 -- returns information [dirname, filename, basename, extname] about a file path
-function game.pathinfo(path)
+function pathinfo(path)
 	local pos = string.len(path)
 	local extpos = pos + 1
 	while pos > 0 do
@@ -80,7 +80,7 @@ function game.pathinfo(path)
 end
 
 -- Helper function that loads a file into ram.
-function game.loadfile(fromDir, name)
+function loadfile(fromDir, name)
 	local intmp = assert(io.open(from_dir .. name, 'r'))
 	local content = intmp.read("*a")
 	intmp:close()
@@ -90,7 +90,7 @@ end
 
 -- Loads a source file, but converts it with line numbering only
 -- showing from first line to last line
-function game.loadlines(source, first, last)
+function loadlines(source, first, last)
 	local f = io.open(source)
 	local lines = {}
 	local i = 0

@@ -6,13 +6,6 @@
 
 --------------------------------
 -- 
--- @function [parent=#ControlSlider] setBackgroundSprite 
--- @param self
--- @param #cc.Sprite var
--- @return ControlSlider#ControlSlider self (return value: cc.ControlSlider)
-        
---------------------------------
--- 
 -- @function [parent=#ControlSlider] getMaximumAllowedValue 
 -- @param self
 -- @return float#float ret (return value: float)
@@ -128,6 +121,13 @@
 --------------------------------
 -- 
 -- @function [parent=#ControlSlider] setSelectedThumbSprite 
+-- @param self
+-- @param #cc.Sprite var
+-- @return ControlSlider#ControlSlider self (return value: cc.ControlSlider)
+        
+--------------------------------
+-- 
+-- @function [parent=#ControlSlider] setBackgroundSprite 
 -- @param self
 -- @param #cc.Sprite var
 -- @return ControlSlider#ControlSlider self (return value: cc.ControlSlider)

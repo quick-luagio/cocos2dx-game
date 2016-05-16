@@ -23,36 +23,36 @@ THE SOFTWARE.
 ]]
 
 -- Cocos2d-Lua core functions
-cc.loaded_packages = {}
-local loaded_packages = cc.loaded_packages
+-- cc.loaded_packages = {}
+-- local loaded_packages = cc.loaded_packages
 
-function cc.register(name, package)
-    cc.loaded_packages[name] = package
-end
+-- function cc.register(name, package)
+--     cc.loaded_packages[name] = package
+-- end
 
-function cc.load(...)
-    local names = {...}
-    assert(#names > 0, "cc.load() - invalid package names")
+-- function cc.load(...)
+--     local names = {...}
+--     assert(#names > 0, "cc.load() - invalid package names")
 
-    local packages = {}
-    for _, name in ipairs(names) do
-        assert(type(name) == "string", string.format("cc.load() - invalid package name \"%s\"", tostring(name)))
-        if not loaded_packages[name] then
-            local packageName = string.format("packages.%s.init", name)
-            local cls = require(packageName)
-            assert(cls, string.format("cc.load() - package class \"%s\" load failed", packageName))
-            loaded_packages[name] = cls
+--     local packages = {}
+--     for _, name in ipairs(names) do
+--         assert(type(name) == "string", string.format("cc.load() - invalid package name \"%s\"", tostring(name)))
+--         if not loaded_packages[name] then
+--             local packageName = string.format("packages.%s.init", name)
+--             local cls = require(packageName)
+--             assert(cls, string.format("cc.load() - package class \"%s\" load failed", packageName))
+--             loaded_packages[name] = cls
 
-            if DEBUG > 1 then
-                printInfo("cc.load() - load module \"packages.%s.init\"", name)
-            end
-        end
-        packages[#packages + 1] = loaded_packages[name]
-    end
-    return unpack(packages)
-end
+--             if DEBUG > 1 then
+--                 printInfo("cc.load() - load module \"packages.%s.init\"", name)
+--             end
+--         end
+--         packages[#packages + 1] = loaded_packages[name]
+--     end
+--     return unpack(packages)
+-- end
 
-local load_ = cc.load
+-- local load_ = cc.load
 local bind_
 bind_ = function(target, ...)
     local t = type(target)

@@ -168,31 +168,28 @@ function Facade:loadController(module, controller)
 	local controller_ = controller or module
 	local pkg_ = string.format("%s.%sController", self:getModulePath(module), controller_)
 	local obj_ = require(pkg_).new(module)
-
+     
 	return obj_
 end
 
 function Facade:loadModel(module, model)
 	local model_ = model or module
 	local pkg_ = string.format("%s.%sModel", self:getModulePath(module), model_)
-	local obj_ = require(pkg_).new()
-
+	local obj_ = require(pkg_).new(module)
 	return obj_
 end
 
 function Facade:loadProxy(module, proxy)
 	local proxy_ = proxy or module
 	local pkg_ = string.format("%s.%sProxy", self:getModulePath(module), proxy_)
-	local obj_ = require(pkg_).new()
-
+	local obj_ = require(pkg_).new(module)
 	return obj_
 end
 
 function Facade:loadView(module, view)
 	local view_ = view or module
 	local pkg_ = string.format("%s.%sView", self:getModulePath(module), view_)
-	local obj_ = require(pkg_).new()
-
+	local obj_ = require(pkg_).new(module)
 	return obj_,pkg_
 end
 
@@ -284,10 +281,33 @@ function Controller:handleNotification(notification)
 end
 
 local View = class("View",Notifier)
+function View:ctor(name)
+   self.moduleName = name
+end
+
+function View:onRegister()
+
+end
 
 local Proxy = class("Proxy",Notifier)
 
+function Proxy:ctor(name)
+   self.moduleName = name
+end
+
+function Proxy:onRegister()
+   
+end
+
 local Model = class("Model",Notifier)
+
+function Model:ctor(name)
+   self.moduleName = name
+end
+
+function Model:onRegister()
+
+end
 
 mvc.Facade = Facade
 mvc.Controller = Controller

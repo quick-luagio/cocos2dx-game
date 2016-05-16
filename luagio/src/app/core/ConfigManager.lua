@@ -1,5 +1,4 @@
-cc.events = require(cc.PACKAGE_APP_CONFIG..".Events")
-cc.paths = require(cc.PACKAGE_APP_CONFIG..".Paths")
+
 
 ConfigManager = {}
 
@@ -9,7 +8,7 @@ local _effect_configs = nil
 
 local _module_configs = nil
 
-
+local _layer_sets = nil
 
 function ConfigManager.loadActionConfig()
     if _action_configs then return end
@@ -26,6 +25,10 @@ function ConfigManager.loadModuleConfig()
     _module_configs = require(cc.PACKAGE_APP_CONFIG..".Modules")
 end
 
+function ConfigManager.loadLayerSets()
+    if _layer_sets then return end
+    _layer_sets = require(cc.PACKAGE_APP_CONFIG..".LayerSets")
+end
 
 
 --获取action配置
@@ -57,12 +60,25 @@ end
 
 --获取effect所在文件路径
 function ConfigManager.getEffectPath()
-   return Effect_Path
+   return cc.paths.Effect_Path
 end
 
 --获取effect 文件名
 function ConfigManager.getEffectFileName(action_id)
    return string.format("%s_%s","effect",action_id)
+end
+
+--获取csb文件
+function ConfigManager.getCSBFile(path)
+   return string.format("%s.csb",path)
+end
+
+--获取层次配置
+function ConfigManager.getLayerSets()
+    if not _layer_sets  then
+       ConfigManager.loadLayerSets()
+    end
+    return _layer_sets
 end
 
 

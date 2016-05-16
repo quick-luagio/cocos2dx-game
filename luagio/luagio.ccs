@@ -1,0 +1,13 @@
+<Solution>
+  <PropertyGroup Name="luagio" Version="3.10.0.0" Type="CocosStudio" />
+  <SolutionFolder>
+    <Group ctype="ResourceGroup">
+      <RootFolder Name=".">
+        <Folder Name="login">
+          <Image Name="HelloWorld.png" />
+          <Project Name="login.csd" Type="Layer" />
+        </Folder>
+      </RootFolder>
+    </Group>
+  </SolutionFolder>
+</Solution>

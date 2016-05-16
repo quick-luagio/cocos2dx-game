@@ -18,7 +18,10 @@ function GameController:onRegister()
    
    for _,view in ipairs(views) do
    	local view = cc.facade:loadView(self.moduleName,view)
-	   if view then setglobal(checkObjName(view.__cname), view) end
+	   if view then 
+         setglobal(checkObjName(view.__cname), view) 
+         view:onRegister()
+      end
    end
 
    if not proxys then
@@ -26,7 +29,10 @@ function GameController:onRegister()
    end
    for _,proxy in ipairs(proxys) do
    	local proxy = cc.facade:loadProxy(self.moduleName,proxy)
-   	if proxy then setglobal(checkObjName(proxy.__cname),proxy) end
+   	if proxy then 
+         setglobal(checkObjName(proxy.__cname),proxy) 
+         proxy:onRegister()
+      end
    end
    
 end

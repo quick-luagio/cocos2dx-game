@@ -1,25 +1,32 @@
-local ViewsMonitor = class("ViewsMonitor")
+local ViewMonitor = class("ViewMonitor")
 local layerSets ={}
 
-function ViewsMonitor:ctor()
+function ViewMonitor:getInstance()
+   if not self._instance then
+      self._instance = ViewMonitor.new()
+   end
+   return self._instance
+end
+
+function ViewMonitor:ctor()
    self._mainLayer = display.newLayer()
    self._mainLayer:retain()
 end
 
-function ViewsMonitor:replaceScene(scene)
+function ViewMonitor:replaceScene(scene)
    if self._mainLayer then
       self._mainLayer:removeFromParent()
    end
    scene:addChild(self._mainLayer)
 end
 
-function ViewsMonitor:clearLayers()
+function ViewMonitor:clearLayers()
    if self._mainLayer then
       self._mainLayer:removeAllChildren()
    end
 end
 
-function ViewsMonitor:clear()
+function ViewMonitor:clear()
    if  self._mainLayer then
 	   self._mainLayer:release()
 	   self._mainLayer:removeFromParent()
@@ -27,25 +34,18 @@ function ViewsMonitor:clear()
    end
 end
 
-layerSets["PANEL"]     = {zorder=1,cls="PanelLayer",}
-layerSets["INFO"]      = {zorder=1,cls="InfoLayer",}
-layerSets["DIALOG"]    = {zorder=2,cls="DialogLayer",}
-layerSets["LOADING"]   = {zorder=3,}
-layerSets["GUIDE"]     = {zorder=4,}
-layerSets["TIP"]       = {zorder=5,}
 
-
-function ViewsMonitor:addView(view)
-   if not view.viewType or view.getUI() then
-   	  printInfo(string.format(" %s not find viewType or getUI() is nil",rawget(view,"__cname")))
+function ViewMonitor:addView(view)
+   if not view.viewType or not view:getUI() then
+   	  printInfo(string.format(" %s not find viewType:[%s] or getUI() is nil",view.__cname,view.viewType or ""))
       return
    end
-
+   local layerSets = ConfigManager.getLayerSets()
    local layerSet = layerSets[view.viewType]
    
    if isempty(layerSets.cls) then
 
-      _mainLayer:addChild(view:getUI(),layerSet.zorder)
+      self._mainLayer:addChild(view:getUI(),layerSet.zorder)
 
    else
    	  local uiLayer = _mainLayer:getChildByName(view.viewType)
@@ -60,7 +60,7 @@ function ViewsMonitor:addView(view)
    end
 end
 
-function ViewsMonitor:removeLayer(viewType)
+function ViewMonitor:removeLayer(viewType)
    local uiLayer = self:getLayer(viewType)
    if uiLayer then
       uiLayer:remove()
@@ -68,7 +68,7 @@ function ViewsMonitor:removeLayer(viewType)
 end
 
 --可视化某个viewType
-function ViewsMonitor:visibleLayer(viewType,visible)
+function ViewMonitor:visibleLayer(viewType,visible)
    local uiLayer = self:getLayer(viewType)
    if uiLayer then
       uiLayer:setVisible(visible)
@@ -81,7 +81,9 @@ function ViewsMonitor:visibleLayer(viewType,visible)
 end
 
 
-function ViewsMonitor:getLayer(viewType)
+function ViewMonitor:getLayer(viewType)
+   local layerSets = ConfigManager.getLayerSets()
+
    local layerSet = layerSets[viewType]
    if layerSets.cls then
       return _mainLayer:getChildByName(viewType)
@@ -89,6 +91,6 @@ function ViewsMonitor:getLayer(viewType)
    return nil
 end
 
-
+return ViewMonitor
 
 ---------------------------impl  UILayers----------------------------------------------

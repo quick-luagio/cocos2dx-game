@@ -94,9 +94,6 @@ end
 
 
 
-function checkObjName(clsName)
-  if not clsName then return clsName end
-  return string.lower(string.sub(clsName,0,1))..string.sub(clsName,0)
-end
+
 
 

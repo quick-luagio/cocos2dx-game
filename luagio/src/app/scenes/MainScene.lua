@@ -3,9 +3,9 @@ local MainScene = class("MainScene",cc.Scene)
 
 function MainScene:ctor()
     -- add background image
-    display.newSprite("HelloWorld.png")
-        :move(display.center)
-        :addTo(self)
+    -- display.newSprite("HelloWorld.png")
+    --     :move(display.center)
+    --     :addTo(self)
 
     -- add HelloWorld label
     cc.Label:createWithSystemFont("Hello World", "Arial", 40)

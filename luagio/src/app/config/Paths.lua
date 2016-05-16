@@ -1,5 +1,6 @@
 local paths = {}
 
-paths.Effect_Path = "drawable/"
+paths.Effect_Path = "res/drawable/"
+
 
 return paths

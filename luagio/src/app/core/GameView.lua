@@ -7,54 +7,53 @@
 local CCSPanel = import(".CCSPanel")
 local GameView = class("GameView",cc.mvc.View)
 
-function GameView:ctor()
-   GameView.super.ctor(self)
-   self._isInit = false
-   self._isActive = false
+--提供子类初始化
+function GameView:initUI()
+   
 end
+
 --初始化
 function GameView:init(styleName,viewType)
    self.styleName = styleName
    self.viewType = viewType
-   self:injectUI()
-   self:initUI()
-
-   self._isInit = true
-
-   printInfo("View:init() styleName:%s ,viewType:%s",self.styleName,self.viewType)
-end
-
---提供子类初始化
-function GameView:initUI()
-
+   self._hasUI = false
+   self._isActive = false
 end
 
 --注入UI
 function GameView:injectUI()
-   self.ui = CCSPanel.new(self.styleName)
+   self.ui = CCSPanel:create(string.format("%s/%s",string.lower(self.moduleName),self.styleName))
+   self:initUI()
+
+   self._hasUI = true
+
+   printInfo("View:init() styleName:%s ,viewType:%s",self.styleName,self.viewType)
+
 end
 
 --显示
 function GameView:show()
-   ViewsMonitor:getInstance():addView(self)
+   self:validateUI() --显示时候验证UI
+
+   cc.viewMonitor:addView(self)
    self:onShow()
 end
 
 --关闭
 function GameView:close()
-   ViewsMonitor:getInstance():removeView(self)
+   cc.viewMonitor:removeView(self)
 end
 
 --验证是否已经初始化
-function GameView:validateInit()
-   if not self._isInit then -- 如果释放了，则重新初始化
-      self:init(self.styleName,self.viewType)
+function GameView:validateUI()
+   if not self._hasUI then -- 如果释放了，则重新初始化
+      self:injectUI()
    end
 end
 
 --更新视图数据
 function GameView:update(data)
-   self:validateInit()
+   self:validateUI() -- update时候验证UI
 end
 
 --是否处于活跃显示状态
@@ -73,7 +72,7 @@ end
 --当关闭时触发
 function GameView:onClose()
    printInfo("%s close",self.__cname)
-   self._isInit = false
+   self._hasUI = false
    self._isActive = false
    self:dispose()
 end

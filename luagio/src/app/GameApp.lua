@@ -15,7 +15,7 @@ function GameApp:ctor()
    local configs = {
                       defaultScene = "MainScene",
                       scene_package = cc.PACKAGE_APP_SCENES
-                  }
+                   }
     GameApp.super.ctor(self,configs)
 end
 
@@ -41,9 +41,11 @@ function GameApp:inject()
     
     cc.paths = require(cc.PACKAGE_APP_CONFIG..".Paths") -- 获取资源路径
 
+    cc.viewTypes = require(cc.PACKAGE_APP_CONFIG..".ViewTypes") -- 获取视图类型
+
     cc.facade = require(cc.PACKAGE_APP_CORE..".GameFacade"):getInstance() -- 获取facade实例
-    
-    cc.mvc.facade = cc.facade
+
+    cc.viewMonitor = require(cc.PACKAGE_APP_CORE..".ViewMonitor"):getInstance() -- 获取视图管理监控实例
 end
 
 
@@ -53,6 +55,14 @@ function GameApp:onRegister()
     
     self:inject()
     self:initApp()
+end
+
+
+
+function GameApp:enterScene(sceneName, transition, time, more)
+    local scene = GameApp.super.enterScene(self,sceneName, transition, time, more)
+    cc.viewMonitor:replaceScene(scene) --视图监控器切换场景[暂时做简单处理]
+    return scene
 end
 
 return GameApp

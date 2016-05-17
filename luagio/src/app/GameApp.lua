@@ -5,7 +5,7 @@
 
 require(cc.PACKAGE_UTILS..".var")
 require(cc.PACKAGE_APP_CORE..".Helper")
-require(cc.PACKAGE_APP_CORE..".ConfigManager")
+
 
 local AppBase = require(cc.PACKAGE_MVC..".AppBase")
 
@@ -33,6 +33,8 @@ function GameApp:initApp()
 end
 
 function GameApp:inject()
+    cc.cmg = require(cc.PACKAGE_APP_CORE..".ConfigManager")
+
     cc.mvc = require(cc.PACKAGE_MVC..".init")  --导入mvc库
 
     cc.mvc.modulePath = cc.PACKAGE_APP_MODULES --设置模块路径

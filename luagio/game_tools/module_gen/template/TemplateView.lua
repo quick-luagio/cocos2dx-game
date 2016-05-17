@@ -16,7 +16,7 @@ function TemplateView:initUI()
 end
 
 
---当ui移除时候
+
 function TemplateView:dispose()
    TemplateView.super.dispose(self)
 end

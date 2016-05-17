@@ -1,3 +1,6 @@
+--[[--
+ 场景层配置文件
+]]
 local layerSets = {}
 
 layerSets[cc.viewTypes.PANEL]     = {zorder=1,cls="PanelLayer",}

@@ -1,3 +1,6 @@
+--[[--
+ 视图配置文件
+]]
 local view_types = {}
 
 view_types.PANEL = "PANEL"

@@ -9,4 +9,11 @@ local UserController = class("UserController",GameController)
 
 
 
+--函数说明
+--notification
+function UserController:noticeUserProxyGetInfo(notification)
+
+end
+
+
 return UserController

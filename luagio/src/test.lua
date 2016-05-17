@@ -1,19 +1,18 @@
  -- mysql = require "luasql.mysql"
 
- -- print(mysql)
+local str = ":dispose  ("
 
- require("packages.utils.ioutil")
-
---  function scandir(directory)
---     local i, t, popen = 0, {}, io.popen
---     -- for filename in popen('ls -a "'..directory..'"'):lines() do
---     for filename in popen('dir "'..directory..'" /b /ad'):lines() do
---         i = i + 1
---         t[i] = filename
---     end
---     return t
+-- local t= string.find(str,":%s*dispose%s*%(")
+-- print(t)
+-- for w in t do
+--    print(w)
 -- end
-local t = scandir(".")
-for k,v in pairs(t) do
-	print(k,v)
-end
+
+-- require("cocos.cocos2d.functions")
+
+-- local str = loadstring("return"..io.readfile("UserStatic.lua"))()
+
+-- print(str[2])
+
+
+print(string.len(12))

@@ -1,3 +1,7 @@
+--[[--
+效果配置文件
+]]
+
 local _effect_configs = {}
 
 _effect_configs[2] = {

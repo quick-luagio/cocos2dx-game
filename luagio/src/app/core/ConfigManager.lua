@@ -1,6 +1,6 @@
 
 
-ConfigManager = {}
+local ConfigManager = {}
 
 local _action_configs = nil
 
@@ -9,6 +9,8 @@ local _effect_configs = nil
 local _module_configs = nil
 
 local _layer_sets = nil
+
+local _static_configs = nil
 
 function ConfigManager.loadActionConfig()
     if _action_configs then return end
@@ -30,6 +32,11 @@ function ConfigManager.loadLayerSets()
     _layer_sets = require(cc.PACKAGE_APP_CONFIG..".LayerSets")
 end
 
+function ConfigManager.loadStaticConfig()
+    if _static_configs then return end
+    _layer_sets = require(cc.PACKAGE_APP_CONFIG..".Statics")
+end
+
 
 --获取action配置
 function ConfigManager.getActionTable(action_key)
@@ -39,6 +46,13 @@ function ConfigManager.getActionTable(action_key)
     return _action_configs[action_key]
 end
 
+--获取静态配置
+function ConfigManager.getStaticConfigs()
+    if not _static_configs  then
+       ConfigManager.loadStaticConfig()
+    end
+    return _static_configs
+end
 
 
 --获取effect配置
@@ -82,7 +96,7 @@ function ConfigManager.getLayerSets()
 end
 
 
-
+return ConfigManager
 
 
 

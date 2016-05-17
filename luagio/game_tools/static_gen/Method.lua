@@ -1,4 +1,4 @@
----- 加载数据静态 [Template]----
+---- 加载静态数据 [Template]----
 function StaticDataLoader.loadTemplate()
    local staicDic = {}
 

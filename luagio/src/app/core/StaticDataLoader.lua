@@ -3,13 +3,9 @@
 
 ]]
 
+local static_configs = nil
 
-
-local static_configs = {}
-
-static_configs["test"] = {id=1,name=1,age=1}  
-
-function __STATIC__READ__(name,process)
+local function __STATIC__READ__(name,process)
    if not static_configs then
       static_configs = cc.cmg.getStaticConfigs()
    end
@@ -45,7 +41,12 @@ local StaticDataLoader = {}
 
 
 
----- 加载数据静态 [Test]----
+
+
+
+
+
+---- 加载静态数据 [Test]----
 function StaticDataLoader.loadTest()
    local staicDic = {}
 

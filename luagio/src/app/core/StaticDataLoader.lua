@@ -41,39 +41,24 @@ end
 local StaticDataLoader = {}
 
 
----- 加载用户静态----
+
+
+
+
+---- 加载数据静态 [Test]----
 function StaticDataLoader.loadTest()
-   local data ={}
+   local staicDic = {}
 
    __STATIC__READ__("test",function(i,item)  
+   
 
-       print(item.name)
+
+
    end)
-   return data
-end
-
-cc = {paths = {}}
-
-local project_dir = '../../../'
-
-cc.paths.Static_Path = project_dir.."res/static/"
-
-function io.readfile(path)
-    local file = io.open(path, "r")
-    if file then
-        local content = file:read("*a")
-        io.close(file)
-        return content
-    end
-    return nil
+   return staicDic
 end
 
 
-package.path = string.format("%s;%s?.lua;%s?/init.lua",  
-         package.path , project_dir, project_dir) -- 添加路径 '..\\..\\'
-
-
-StaticDataLoader.loadTest()
 
 
 return StaticDataLoader

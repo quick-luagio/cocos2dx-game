@@ -18,7 +18,9 @@ function static.genStatics(debug)
     if not static_config then
        static_config = require("src/app/config/Statics")
 	end
-    
+	--生成静态数据加载
+    static.genStaticLoader(table.keys(static_config))
+
     local conn = static.createSqlConn()
     
     for name,keys in pairs(static_config) do
@@ -91,6 +93,68 @@ function static.readStatic(cursor,staticKeys)
    end
    cursor:close()
    return content
+end
+
+--生成静态数据加载
+function static.genStaticLoader(statics)
+   local path = project_dir.."src/app/core/StaticDataLoader.lua"
+   local content = io.readfile(path)
+   local lines = static.getFileLines(path)
+
+   for _,staticName in ipairs(statics) do
+   	   	local action = "load"..string.upper(string.sub(staticName,0,1))..string.sub(staticName,2)
+   	   	if not string.find(content,action) then
+           local i,line = static.getLine(lines,"return%s*".."StaticDataLoader")
+           local content = static.addLines(lines,static.getMethodTemplate(staticName),i)
+           io.writefile(path,content)
+           print(string.format("%s add method [%s]","StaticDataLoader",action))
+   	   	else
+           print(string.format("%s has method [%s]","StaticDataLoader",action))
+   	   	end
+   end   
+end
+
+
+
+
+--获取函数 template
+function static.getMethodTemplate(name)
+   local content = io.readfile("Method.lua")
+   if name then
+      content = string.gsub(content,"template",string.lower(name))
+      content = string.gsub(content,"Template",string.upper(string.sub(name,0,1))..string.sub(name,2))
+   end
+   return content
+end
+
+--往文件行内加内容
+function static.addLines(lines,content,i)
+   if not content then return end
+   table.insert( lines, i,content )
+   local fileContent = table.concat(lines, '\n')
+   return fileContent
+end
+
+function static.getLine(lines,str)
+   for i,line in ipairs(lines) do
+   	   if string.find(line,str) then
+          return i,line
+   	   end
+   end
+   return 0,nil
+end
+
+--按行的取
+function static.getFileLines(dir)
+	local f = io.open(dir)
+    local lines = {}
+    local i = 0
+    for line in f:lines() do
+		i = i + 1
+		lines[#lines + 1] = line
+	end
+    io.close(f)
+	return lines
 end
 
 --1表示数值型

@@ -16,4 +16,13 @@ function UserController:noticeUserProxyGetInfo(notification)
 end
 
 
+
+--函数说明
+--notification
+function UserController:noticeUserProxyTest(notification)
+
+end
+
+
+
 return UserController

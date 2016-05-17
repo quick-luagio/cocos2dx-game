@@ -57,7 +57,7 @@ function template.genController(module,controller,events)
    for _,event in ipairs(events) do
    	   	local action = "notice"..string.gsub(event,"_","")
    	   	if not string.find(content,action) then
-           local i,line = template.getLine(lines,"return")
+           local i,line = template.getLine(lines,"return%s*"..controller)
            local content = template.addLines(lines,template.getMethodTemplate(controller,action,"notification"),i)
            io.writefile(path,content)
            print(string.format("%s add method [%s]",controller,action))

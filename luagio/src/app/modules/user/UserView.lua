@@ -16,7 +16,7 @@ function UserView:initUI()
 end
 
 
---当ui移除时候
+
 function UserView:dispose()
    UserView.super.dispose(self)
 end

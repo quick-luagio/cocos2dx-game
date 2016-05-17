@@ -14,7 +14,7 @@ end
 
 --清理pakage
 function game.unloadPackage()
-    require("luaLoader")
+    require("requires")
 end
 
 

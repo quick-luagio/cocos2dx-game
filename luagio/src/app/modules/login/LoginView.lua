@@ -8,6 +8,15 @@ end
 
 function LoginView:initUI()
    LoginView.super.initUI(self)
+   
+   local tip = self.ui:getChildByName("tip")
+   tip:setPositionX(display.cx)
+   tip:setString("这个luagio登录界面")
+
+   local btn_login = self.ui:getChildByName("btn_login")
+   
+   btn_login:align(display.CENTER,display.cx,display.cy-230)
+   
 end
 
 function LoginView:dispose()

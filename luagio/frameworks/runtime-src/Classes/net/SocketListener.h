@@ -19,12 +19,12 @@ public:
 	virtual void onReconnectError(int errorCode);
 	virtual void onClose();
 	void callbackLua(int code,string data);
-	void registerScriptHandler(int funcID);
-	int getScriptHandler();
+	void setMessageHandler(int messageHandler);
+	int getMessageHandler();
 	void dispatchResponseCallbacks(float delta);
 private:
 	
-	int funcID;
+	int messageHandler;
 };
 
 #endif

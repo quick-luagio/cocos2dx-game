@@ -6,12 +6,6 @@
 
 --------------------------------
 -- 
--- @function [parent=#Scene] initWithPhysics 
--- @param self
--- @return bool#bool ret (return value: bool)
-        
---------------------------------
--- 
 -- @function [parent=#Scene] setCameraOrderDirty 
 -- @param self
 -- @return Scene#Scene self (return value: cc.Scene)
@@ -38,14 +32,6 @@
 -- @param self
 -- @param #cc.EventCustom event
 -- @return Scene#Scene self (return value: cc.Scene)
-        
---------------------------------
---  Get the physics world of the scene.<br>
--- return The physics world of the scene.<br>
--- js NA
--- @function [parent=#Scene] getPhysicsWorld 
--- @param self
--- @return PhysicsWorld#PhysicsWorld ret (return value: cc.PhysicsWorld)
         
 --------------------------------
 -- 
@@ -76,14 +62,6 @@
 --  Creates a new Scene object. <br>
 -- return An autoreleased Scene object.
 -- @function [parent=#Scene] create 
--- @param self
--- @return Scene#Scene ret (return value: cc.Scene)
-        
---------------------------------
---  Create a scene with physics.<br>
--- return An autoreleased Scene object with physics.<br>
--- js NA
--- @function [parent=#Scene] createWithPhysics 
 -- @param self
 -- @return Scene#Scene ret (return value: cc.Scene)
         

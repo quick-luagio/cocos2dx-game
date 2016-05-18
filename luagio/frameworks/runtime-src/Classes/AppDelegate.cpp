@@ -3,7 +3,10 @@
 #include "SimpleAudioEngine.h"
 #include "cocos2d.h"
 #include "lua_module_register.h"
-
+#include "net/lua_net_proxy_auto.hpp"
+extern "C" {
+#include "lua_more.h"
+}
 #if (CC_TARGET_PLATFORM != CC_PLATFORM_LINUX)
 #include "ide-support/CodeIDESupport.h"
 #endif
@@ -61,6 +64,8 @@ bool AppDelegate::applicationDidFinishLaunching()
     ScriptEngineManager::getInstance()->setScriptEngine(engine);
     lua_State* L = engine->getLuaStack()->getLuaState();
     lua_module_register(L);
+	register_all_cocos2dx_net_proxy(L);
+    //luaopen_lua_more(L);
 
     register_all_packages();
 

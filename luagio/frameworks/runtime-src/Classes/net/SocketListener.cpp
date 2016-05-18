@@ -68,33 +68,32 @@ void SocketListener::dispatchResponseCallbacks(float delta)
 		int code = m.code;
 		string data = m.message;
 
-		cocos2d::LuaEngine* pEngine = (cocos2d::LuaEngine*)cocos2d::ScriptEngineManager::sharedManager()->getScriptEngine();
+		cocos2d::LuaEngine* pEngine = (cocos2d::LuaEngine*)cocos2d::ScriptEngineManager::getInstance()->getScriptEngine();
 		cocos2d::LuaStack* luaStack= pEngine->getLuaStack();
 		luaStack->pushInt(code);
 		luaStack->pushString(data.c_str());
-		luaStack->executeFunctionByHandler(this->funcID, 2);
+		luaStack->executeFunctionByHandler(this->messageHandler, 2);
 	}
 }
 
-void SocketListener::registerScriptHandler(int funcId)
+void SocketListener::setMessageHandler(int messageHandler)
 {
-	this->funcID = funcId;
+	this->messageHandler = messageHandler;
 }
 
-int SocketListener::getScriptHandler()
+int SocketListener::getMessageHandler()
 {
-	return this->funcID;
+	return this->messageHandler;
 }
-
 
 
 //构造时，开始定时器
 //在界面每一次刷新时，调用dispatchResponseCallbacks方法，读取并处理消息
 SocketListener::SocketListener(){
-    CCDirector::sharedDirector()->getScheduler()->scheduleSelector(schedule_selector(SocketListener::dispatchResponseCallbacks), this, 0, false);
+    Director::getInstance()->getScheduler()->scheduleSelector(schedule_selector(SocketListener::dispatchResponseCallbacks), this, 0, false);
 }
 
 //销毁时，关闭定时器
 SocketListener::~SocketListener(){
-	CCDirector::sharedDirector()->getScheduler()->unscheduleAllForTarget(this);
+	Director::getInstance()->getScheduler()->unscheduleAllForTarget(this);
 }

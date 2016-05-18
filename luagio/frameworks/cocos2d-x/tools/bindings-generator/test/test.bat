@@ -10,20 +10,20 @@ setlocal
 :: set PYTHON_ROOT=C:/Python27
 :: set NDK_ROOT=G:/android/android-ndk-r9b
 
-setlocal ENABLEEXTENSIONS
-if %errorlevel% neq 0 (
-    echo Unable to enable extensions
-    exit /b 1
-    )
+:: setlocal ENABLEEXTENSIONS
+:: if %errorlevel% neq 0 (
+::     echo Unable to enable extensions
+::     ::exit /b 1
+ ::    )
 
-if defined PYTHON_ROOT (echo PYTHON_ROOT is defined.) else (
+:: if defined PYTHON_ROOT (echo PYTHON_ROOT is defined.) else (
     echo PYTHON_ROOT is NOT defined!
-    exit /b 1
+    ::exit /b 1
     )
 
-if defined NDK_ROOT (echo NDK_ROOT is defined.) else (
+:: if defined NDK_ROOT (echo NDK_ROOT is defined.) else (
     echo NDK_ROOT is NOT defined!
-    exit /b 1
+    ::exit /b 1
     )
 
 set LLVM="%NDK_ROOT%/toolchains/llvm-3.3/prebuilt/"
@@ -81,12 +81,14 @@ echo ---------------------------------
 echo Generating bindings succeeds.
 echo ---------------------------------
 endlocal
-exit /b 0
+:: exit /b 0
 
 :ERROR
 echo ---------------------------------
 echo Generating bindings fails.
 echo ---------------------------------
 endlocal
-exit /b 1
+:: exit /b 1
+
+pause
 

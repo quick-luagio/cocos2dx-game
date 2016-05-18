@@ -21,7 +21,7 @@ end
 
 --初始化app
 function GameApp:initApp()
-    local module_configs = cc.cmg.getModuleConfig() --获取模块配置文件
+    local module_configs = cc.cfm.getModuleConfig() --获取模块配置文件
 
     cc.facade:loadConfigs(module_configs) --载入模块配置文件
 
@@ -35,7 +35,7 @@ end
 
 --注入处理
 function GameApp:inject()
-    cc.cmg = require(cc.PACKAGE_APP_CORE..".ConfigManager") --导入配置管理
+    cc.cfm = require(cc.PACKAGE_APP_CORE..".ConfigManager") --导入配置管理
 
     cc.mvc = require(cc.PACKAGE_MVC..".init")  --导入mvc库
 

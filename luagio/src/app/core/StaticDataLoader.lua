@@ -7,7 +7,7 @@ local static_configs = nil
 
 local function __STATIC__READ__(name,process)
    if not static_configs then
-      static_configs = cc.cmg.getStaticConfigs()
+      static_configs = cc.cfm.getStaticConfigs()
    end
    local file = cc.paths.Static_Path..string.format("%s.lua",name)
    local content = io.readfile(file)

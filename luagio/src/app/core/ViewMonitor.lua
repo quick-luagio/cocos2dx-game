@@ -40,7 +40,7 @@ function ViewMonitor:addView(view)
    	  printInfo(string.format(" %s not find viewType:[%s] or getUI() is nil",view.__cname,view.viewType or ""))
       return
    end
-   local layerSets = ConfigManager.getLayerSets()
+   local layerSets = cc.cfm.getLayerSets()
    local layerSet = layerSets[view.viewType]
    
    if isempty(layerSets.cls) then
@@ -82,7 +82,7 @@ end
 
 
 function ViewMonitor:getLayer(viewType)
-   local layerSets = ConfigManager.getLayerSets()
+   local layerSets = cc.cfm.getLayerSets()
 
    local layerSet = layerSets[viewType]
    if layerSets.cls then
